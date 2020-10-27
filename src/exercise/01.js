@@ -3,16 +3,12 @@
 
 import React from 'react'
 
-const Globe = React.lazy(() => import('../globe'))
+const loadGlobe = () => import('../globe')
+const Globe = React.lazy(loadGlobe)
 
 function App() {
   const [showGlobe, setShowGlobe] = React.useState(false)
 
-  const loadingGlobe = (
-    <React.Suspense fallback={<p>loading glerbe</p>}>
-      <Globe />
-    </React.Suspense>
-  )
   return (
     <div
       style={{
@@ -23,6 +19,8 @@ function App() {
         height: '100%',
         padding: '2rem',
       }}
+      onMouseOver={loadGlobe}
+      onFocus={loadGlobe}
     >
       <label style={{marginBottom: '1rem'}}>
         <input
@@ -33,7 +31,9 @@ function App() {
         {' show globe'}
       </label>
       <div style={{width: 400, height: 400}}>
-        {showGlobe ? loadingGlobe : null}
+        <React.Suspense fallback={<p>loading glerbe</p>}>
+          {showGlobe ? <Globe /> : null}
+        </React.Suspense>
       </div>
     </div>
   )
