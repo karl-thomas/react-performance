@@ -78,14 +78,16 @@ function Grid() {
 }
 Grid = React.memo(Grid)
 
-function withStateSlice(Comp, slice) {
-  const MemoComp = React.memo(Comp)
+const withStateSlice = slice => Component => {
+  const MemoComp = React.memo(Component)
   function Wrapper(props, ref) {
     const state = useAppState()
     const cell = slice(state, props)
     return <MemoComp ref={ref} state={cell} {...props} />
   }
-  Wrapper.displayName = `withStateSlice(${Comp.displayName || Comp.name})`
+  Wrapper.displayName = `withStateSlice(${
+    Component.displayName || Component.name
+  })`
   return React.memo(React.forwardRef(Wrapper))
 }
 
@@ -105,7 +107,10 @@ function Cell({state: cell, row, column}) {
     </button>
   )
 }
-Cell = withStateSlice(Cell, (state, {row, column}) => state.grid[row][column])
+const withCellState = withStateSlice(
+  (state, {row, column}) => state.grid[row][column],
+)
+Cell = withCellState(Cell)
 
 function DogNameInput() {
   const [dogName, setDogName] = React.useState('')
